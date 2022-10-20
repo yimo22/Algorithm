@@ -27,7 +27,8 @@ public class Main {
             }
 
             // Solve
-            Solve();
+//            Solve();
+            SolveWithDijakstra();
             idx++;
             N = Integer.parseInt(br.readLine());
         }
@@ -35,7 +36,58 @@ public class Main {
         // close
         br.close();
     }
+    static class Node{
+        int distance;
+        int x, y;
 
+        public Node(int distance, int x, int y) {
+            this.distance = distance;
+            this.x = x;
+            this.y = y;
+        }
+    }
+    private static void SolveWithDijakstra(){
+        // (0,0) -> (N-1, N-1) 까지의 최소 경로
+        // 2차원 다익스트라
+        int[][] dist = new int[N][N];
+        for(int i=0;i<N;i++) for(int j=0;j<N;j++) dist[i][j] = N * N * 10;
+        PriorityQueue<Node> pq = new PriorityQueue<>(new Comparator<Node>() {
+            @Override
+            public int compare(Node o1, Node o2) {
+                return o1.distance > o2.distance ? 1 : -1;
+            }
+        }); // distance 에 대한 최소힙
+
+
+        // init
+        pq.add(new Node(map[0][0], 0, 0));
+
+        // start
+        while(!pq.isEmpty()){
+            Node cur = pq.poll();
+
+            // 알고있는 경로보다 클 경우 -> pass
+            if(dist[cur.x][cur.y] < cur.distance) continue;
+
+            // forwarding
+            for(int[] d : dir){
+                int nx = cur.x + d[0];
+                // boundary check
+                int ny = cur.y + d[1];
+                if(nx < 0 || nx >= N || ny < 0 || ny >= N) continue;
+
+                // promising
+                int nDist = cur.distance + map[nx][ny];
+                if(nDist < dist[nx][ny]){
+                    dist[nx][ny] = nDist;
+                    pq.add(new Node(nDist, nx, ny));
+                }
+            }
+        }
+
+        // answer out
+        System.out.printf("Problem %d: %d\n", idx, dist[N-1][N-1]);
+    }
     private static void Solve() {
         // (0,0) -> (n-1, n-1) 까지 최소 경로의 합
         // map[i] : 0 이상 9 이하의 정수
