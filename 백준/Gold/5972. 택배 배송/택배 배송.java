@@ -1,72 +1,86 @@
-import java.io.*;
-import java.util.*;
+
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.PriorityQueue;
+import java.util.StringTokenizer;
 
 public class Main {
-    static int N;
-    static List<List<Node>> l = new ArrayList<>();
-    static int[] dist;
+    static int N, M;
+    static ArrayList<Node>[] adj;
 
-    public static void main(String[] args) throws IOException{
+    public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st = new StringTokenizer(br.readLine());
-
         N = Integer.parseInt(st.nextToken());
-        int M = Integer.parseInt(st.nextToken());
-
-        for(int i = 0; i<=N; i++)
-            l.add(new ArrayList<>());
-
-        dist = new int[N+1];
-        for(int i = 1; i<=N; i++)
-            dist[i] = Integer.MAX_VALUE;
-
-        while(M-->0){
+        M = Integer.parseInt(st.nextToken());
+        // init
+        adj = new ArrayList[N + 1];
+        for(int i=0;i<adj.length;i++) adj[i] = new ArrayList<>();
+        int s, e, w;
+        for (int i = 0; i < M; i++) {
             st = new StringTokenizer(br.readLine());
-
-            int A = Integer.parseInt(st.nextToken());
-            int B = Integer.parseInt(st.nextToken());
-            int value = Integer.parseInt(st.nextToken());
-
-            l.get(A).add(new Node(B, value));
-            l.get(B).add(new Node(A, value));
+            s = Integer.parseInt(st.nextToken());
+            e = Integer.parseInt(st.nextToken());
+            w = Integer.parseInt(st.nextToken());
+            adj[s].add(new Node(e, w));
+            adj[e].add(new Node(s, w));
         }
 
-        dijkstra();
-
-        System.out.println(dist[N]);
+        // 1 -> V 까지의 최소 경로 구하기
+        // Dijkstra
+        System.out.println(Dijkstra(1));
     }
 
-    static void dijkstra(){
-        Queue<Node> q = new PriorityQueue<>();
 
-        q.offer(new Node(1, 0));
-        dist[1] = 0;
+    private static int Dijkstra(int start) {
 
-        while(!q.isEmpty()){
-            Node a = q.poll();
+        // start -> N 까지의 최소 경로구하기
+        // init
+        int[] dist = new int[N+1];
+        for(int i=1;i<=N;i++) dist[i] = Integer.MAX_VALUE;
+        PriorityQueue<Node> pq = new PriorityQueue<>(new Comparator<Node>(){
+            @Override
+            public int compare(Node o1, Node o2){
+                return o1.w < o2.w ? -1 : 1;
+            }
+        });
 
-            for(int i = 0; i<l.get(a.vertex).size(); i++){
-                Node nextV = l.get(a.vertex).get(i);
+        // start
+        dist[start] = 0;
+        pq.add(new Node(start, 0)); // {vertex, distance}
+        while(!pq.isEmpty()){
+            Node cur = pq.poll();
+            int v = cur.dest;
+            int w = cur.w;
 
-                if(dist[nextV.vertex] > dist[a.vertex] + nextV.value){
-                    dist[nextV.vertex] = dist[a.vertex] + nextV.value;
-                    q.offer(new Node(nextV.vertex, dist[nextV.vertex]));
+            if(dist[v] < w) continue;
+
+            for(Node nxt : adj[cur.dest]){
+                int nv = nxt.dest;
+                int nw = w + nxt.w;
+
+                if(dist[nv] > nw){
+                    dist[nxt.dest] = nw;
+                    pq.add(new Node(nv, nw));
                 }
             }
         }
-    }
-}
 
-class Node implements Comparable<Node>{
-    int vertex, value;
-
-    Node(int vertex, int value){
-        this.vertex = vertex;
-        this.value = value;
+        // answer out
+        return dist[N];
     }
 
-    @Override
-    public int compareTo(Node a){
-        return this.value - a.value;
+    static class Node {
+        int dest;
+        int w;
+
+        Node(int dest, int w) {
+            this.dest = dest;
+            this.w = w;
+        }
     }
 }
