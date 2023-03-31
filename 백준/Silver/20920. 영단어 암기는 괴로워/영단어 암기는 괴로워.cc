@@ -13,14 +13,6 @@ bool comp(const pair<string, int>& a, const pair<string, int>& b) {
     else
         return a.second > b.second;
 }
-bool comp2(const pair<string, int>& a, const pair<string, int>& b) {
-    if (a.first.size() == b.first.size() && a.second == b.second) {
-        return a.first < b.first;
-    } else if (a.second == b.second) {
-        return a.first.size() > b.first.size();
-    }
-    return a.second > b.second;
-}
 int main() {
     string s;
     cin >> N >> M;
