@@ -1,8 +1,5 @@
 #include <iostream>
-#include <algorithm>
-#include <vector>
 #include <cmath>
-#include <stack>
 using namespace std;
 /* define*/
 /* var*/
