@@ -18,19 +18,15 @@ constexpr int dir[4][2] = {
 int N;
 int board[500][500];
 int dp[500][500];
-int visited[500][500];
 int recur(int x, int y) {
     if (dp[x][y]) return dp[x][y];
-
     int ans = 0;
     for (int d = 0; d < 4; d++) {
         int nx = x + dir[d][0];
         int ny = y + dir[d][1];
 
         if (nx < 0 || nx >= N || ny < 0 || ny >= N) continue;
-        if (board[nx][ny] > board[x][y]) {
-            ans = max(ans, recur(nx, ny));
-        }
+        if (board[nx][ny] > board[x][y]) ans = max(ans, recur(nx, ny));
     }
     return dp[x][y] = ans + 1;
 }
