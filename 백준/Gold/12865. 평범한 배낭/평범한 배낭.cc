@@ -1,33 +1,40 @@
 #include <iostream>
 #include <algorithm>
-
-
+#include <vector>
+#include <string>
+#include <cstring>
 using namespace std;
 
-#define MAX_ITEMS 100+1
-#define MAX_W 100000+1
-int N,K;
-int dp[MAX_ITEMS][MAX_W]; // dp[i,j] : i번쨰 물건까지 탐색, 가방의 무게제한이 j일떄 가방에 담긴 물건들의 가치는 value
-int W[MAX_ITEMS];
-int V[MAX_ITEMS];
-int main(){
-  cin >> N >> K;
-  for(int i=1;i<=N;i++){
-    cin >> W[i] >> V[i] ;
-  }
+/* define */
+#define ll long long
+#define endl '\n'
 
-  // init
-  for(int index = 1; index <= N;index++){
-    for(int cur_weight = 1;cur_weight <= K ; cur_weight++){
-      if(cur_weight >= W[index] )
-        dp[index][cur_weight] = max(dp[index-1][cur_weight-W[index]]+V[index], dp[index-1][cur_weight]);
-      else{
-        dp[index][cur_weight] = dp[index-1][cur_weight];
-      }
+/* var */
+int N, K;
+int a[100][2];          // 무게, 가치
+int dp[100+1][100000+1]; // [i][j] : i번째까지의 아이템, 무게 j , 최대가치
+void Solve() {
+    // 무게한도내 가치 최대
+    for (int i = 0; i < N; i++) {
+        // i번째 물건에 대하여 탐색
+        int w = a[i][0];
+        int v = a[i][1];
+        for (int j = 1; j <= K; j++) {
+            dp[i+1][j] = dp[i][j];
+            // use or not
+            if(j - w >= 0) 
+                dp[i+1][j] = max(dp[i][j], dp[i][j - w] + v);
+        }
     }
-  }
-  
-  cout << dp[N][K] << endl;
-
-  return 0;
+    cout << dp[N][K];
+}
+void init() {
+    ios_base::sync_with_stdio(0); cin.tie(0);
+    cin >> N >> K;
+    for (int i = 0; i < N; i++) cin >> a[i][0] >> a[i][1];
+}
+int main() {
+    init();
+    Solve();
+    return 0;
 }
