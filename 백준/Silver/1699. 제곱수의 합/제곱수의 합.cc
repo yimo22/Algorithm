@@ -1,38 +1,37 @@
 #include <iostream>
 #include <algorithm>
 #include <vector>
-#include <cmath>
+#include <string>
+#include <cstring>
 using namespace std;
-#define INF 987654321
+
+/* define */
+#define ll long long
 #define endl '\n'
+
+/* var */
 int N;
-vector<int> dp(100'000 + 1, INF);
-int search(int w) {
-	if (w < 0) return INF;
-	if (w == 0) return dp[0] = 0;
-	if(w == 1){
-		return dp[w] = 1;
-	}
-	if (dp[w] != INF) return dp[w];
+int dp[100000];
+int recur(int n){
+    if (n == 0) return 0;
+    if (dp[n] != -1) return dp[n];
 
-
-	for (int i = 1; i * i <= w; i++) {
-		dp[w] = min(dp[w], search(i * i) + search(w - i * i));
-	}
-	return dp[w];
+    dp[n] = '????';
+    for (int i = 1; n - i * i >= 0; i++) {
+        dp[n] = min(dp[n], recur(n - i * i) + 1);
+    }
+    return dp[n];
 }
 void Solve() {
-	for (int i = 1; i * i <= N; i++) dp[i * i] = 1;
-	search(N);
-	cout << dp[N] << endl;
+    memset(dp, -1, sizeof dp);
+    cout << recur(N);
 }
 void init() {
-	ios_base::sync_with_stdio(0);
-	cin.tie(0);
-	cin >> N;
+    ios_base::sync_with_stdio(0); cin.tie(0);
+    cin >> N;
 }
 int main() {
-	init();
-	Solve();
-	return 0;
+    init();
+    Solve();
+    return 0;
 }
