@@ -48,9 +48,11 @@ public class Main {
         depth[R] = 0;
         recur(R);
 
+        sb = new StringBuilder();
         for(int i=0;i<Q;i++){
             Integer c = Integer.parseInt(br.readLine());
-            System.out.println(_siz[c]);
+            sb.append(_siz[c]).append("\n");
         }
+        System.out.println(sb.toString());
     }
 }
