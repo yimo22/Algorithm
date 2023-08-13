@@ -55,7 +55,7 @@ void init() {
     cin >> N;
     parent.resize(N+1);
     depth.resize(N + 1);
-    if(!order.empty()) order.clear();
+    order.clear();
     memset(ac, 0, sizeof ac);
     for (int i = 1; i <= N; i++) children[i].clear();
 
