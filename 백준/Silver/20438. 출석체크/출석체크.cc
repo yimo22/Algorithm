@@ -2,44 +2,25 @@
 #include <algorithm>
 #include <vector>
 #include <string>
-#include <cstring>
 using namespace std;
-
 /* define */
-#define ll long long
 #define endl '\n'
-
 /* var */
 int N, K, Q, M;
-vector<int> slept;
-vector<int> recv;
+vector<int> slept, recv;
 vector<pair<int,int>> list;
 int visited[5000+123];
 int psum[5000+123];
 int recur(int v){
-    // 현재 자고있는지 chk
-    for(int i : slept){
-        if(i == v) return 0;
-    }
-
+    for(int i : slept) if(i == v) return 0;
     visited[v] = 1;
-
-    // 다음탐색
     for(int nv= v + v; nv <= N+2; nv += v) recur(nv);
     return 0;
 }
 void Solve() {
-    for(int cur : recv){
-        recur(cur);
-    }
-
-    for(int i=3;i<=N+2;i++){
-        psum[i] = psum[i-1] + visited[i];
-    }
-
-    for(pair<int,int> pos : list)
-        cout << pos.second - pos.first + 1 - (psum[pos.second] - psum[pos.first - 1]) << endl;
-
+    for(int cur : recv) recur(cur);
+    for(int i=3;i<=N+2;i++) psum[i] = psum[i-1] + visited[i];
+    for(pair<int,int> pos : list) cout << pos.second - pos.first + 1 - (psum[pos.second] - psum[pos.first - 1]) << endl;
 }
 void init() {
     ios_base::sync_with_stdio(0); cin.tie(0);
